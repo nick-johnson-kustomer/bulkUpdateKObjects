@@ -21,7 +21,7 @@ This workflow is responsible for the updates.
 
 Step 1 is the callable trigger.
 
-Step 2 is an API step calling the search endpoint. It is specifically looking for Calendly objects which don't have a "Customer's Company" value. You will need an appropriate auth token in the workflow variables for this to work.
+Step 2 is an API step calling the search endpoint. It is specifically looking for Calendly objects which don't have a "Customer's Company" value. You will need an appropriate auth token in the workflow variables for this to work. Also make sure that your org name is in the search URI: https://YOUR-ORG-NAME.api.kustomerapp.com/v1/customers/search
 
 Step 3 is a regex step designed to find the first Calendly object ID within the output of step 2.
 
