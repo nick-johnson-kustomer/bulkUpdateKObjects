@@ -23,7 +23,7 @@ Step 1 is the callable trigger.
 
 Step 2 is an API step calling the search endpoint. It is specifically looking for Calendly objects which don't have a "Customer's Company" value. You will need an appropriate auth token in the workflow variables for this to work. Also make sure that your org name is in the search URI: https://YOUR-ORG-NAME.api.kustomerapp.com/v1/customers/search
 
-Step 3 is a regex step designed to find the first Calendly object ID within the output of step 2.
+Step 3 is a regex step designed to find the first Calendly object ID within the output of step 2. You should change "calendly-event" to be the klass name that you're trying to update. If you're unsure, you can test run the workflow and look at the output body of step 2.
 
 The conditional step checks to see if an ID was found before proceeding. This step was included as an automatic off-switch. Once all of the Calendly objects have been updated, this conditional step will stop the workflow from looping on itself infinitely.
 
