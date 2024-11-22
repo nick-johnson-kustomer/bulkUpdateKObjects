@@ -1,5 +1,5 @@
 # bulkUpdateKObjects
-Workflow JSON code to bulk update KObjects
+Workflow JSON code to bulk update KObjects, created by Nick Johnson
 
 This build is specific to Calendly timeline objects, but it can be modified for any custom Klass. In this example, the client wanted the customer's Company Name to be populated in the Calendly objects. Before building this, I created a new custom attribute on the Calendly Klass. This set of workflows is designed to search for all Calendly objects that don't currently have a "Customer's Company" value, then isolate the first result from the search, then update that attribute with the Company Name.
 
