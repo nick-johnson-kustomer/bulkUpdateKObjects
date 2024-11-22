@@ -1,0 +1,314 @@
+{
+  "description": "Created by Nick at Kustomer. Will only be used temporarily. ",
+  "name": "temp---update-calendly-objects---part-2",
+  "steps": [
+    {
+      "id": "3fPbp7p3",
+      "meta": {
+        "description": "Search Calendly objects that don't have Company"
+      },
+      "appVersion": "kustomer-^1.10.2",
+      "action": "kustomer.rest-api.json",
+      "params": {
+        "uri": "https://tilt.api.kustomerapp.com/v1/customers/search",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer {{{variables.673e841e1dc2092540520304}}}",
+          "Content-Type": "application/json"
+        },
+        "data": {
+          "and": [
+            {
+              "kobject_custom_calendly-event_customersCompanyStr": {
+                "not_set": true
+              }
+            }
+          ],
+          "queryContext": "kobject_calendly-event",
+          "timeZone": "America/Los_Angeles"
+        }
+      },
+      "transitions": [
+        {
+          "target": "V6BPyIws",
+          "condition": {
+            "op": "true",
+            "values": [
+              true
+            ]
+          }
+        }
+      ],
+      "errorCases": []
+    },
+    {
+      "id": "xCbUDWjR",
+      "meta": {
+        "description": "Look up the Calendly object to get the customer ID"
+      },
+      "appVersion": "kustomer-^1.10.2",
+      "action": "kustomer.kobject.find",
+      "params": {
+        "klassName": "calendly-event",
+        "id": "/#steps.V6BPyIws.match"
+      },
+      "transitions": [
+        {
+          "target": "Xn_LLKTn",
+          "condition": {
+            "op": "true",
+            "values": [
+              true
+            ]
+          }
+        }
+      ],
+      "errorCases": []
+    },
+    {
+      "id": "Xn_LLKTn",
+      "meta": {
+        "description": "Find the customer data to get the company ID"
+      },
+      "appVersion": "kustomer-^1.10.2",
+      "action": "kustomer.customer.find",
+      "params": {
+        "identifier": "/#steps.xCbUDWjR.customer"
+      },
+      "transitions": [
+        {
+          "target": "m71Rwd23",
+          "condition": {
+            "op": "true",
+            "values": [
+              true
+            ]
+          }
+        }
+      ],
+      "errorCases": []
+    },
+    {
+      "id": "m71Rwd23",
+      "meta": {
+        "description": "Find the company data to get the company name"
+      },
+      "appVersion": "kustomer-^1.10.2",
+      "action": "kustomer.company.find",
+      "params": {
+        "identifier": "/#steps.Xn_LLKTn.companyId"
+      },
+      "transitions": [
+        {
+          "target": "EO2qpDn2",
+          "condition": {
+            "op": "exists",
+            "values": [
+              "/#steps.m71Rwd23.name",
+              ""
+            ]
+          },
+          "meta": {
+            "description": "",
+            "name": "Company found"
+          }
+        },
+        {
+          "target": "Yzg7uB8R",
+          "condition": {
+            "op": "exists",
+            "values": [
+              "true",
+              ""
+            ]
+          },
+          "meta": {
+            "name": "No Company found"
+          }
+        }
+      ],
+      "errorCases": []
+    },
+    {
+      "id": "EO2qpDn2",
+      "transitions": [
+        {
+          "target": "3dIJUioo",
+          "condition": {
+            "op": "true",
+            "values": [
+              true
+            ]
+          }
+        }
+      ],
+      "errorCases": []
+    },
+    {
+      "id": "3dIJUioo",
+      "meta": {
+        "description": "Apply the customer company to the Calendly object"
+      },
+      "appVersion": "kustomer-^1.10.2",
+      "action": "kustomer.kobject.update",
+      "params": {
+        "klassName": "calendly-event",
+        "id": "/#steps.xCbUDWjR.id",
+        "custom": {
+          "customersCompanyStr": "/#steps.m71Rwd23.name"
+        }
+      },
+      "transitions": [
+        {
+          "target": "GBNNUkww",
+          "condition": {
+            "op": "true",
+            "values": [
+              true
+            ]
+          }
+        }
+      ],
+      "errorCases": []
+    },
+    {
+      "id": "GBNNUkww",
+      "meta": {
+        "description": "Prevent looping. Will remove once tests are complete",
+        "displayName": "INTENTIONAL FAIL POINT"
+      },
+      "appVersion": "kustomer-^1.10.2",
+      "transitions": [
+        {
+          "target": "6rawLFsh",
+          "condition": {
+            "op": "true",
+            "values": [
+              true
+            ]
+          }
+        }
+      ],
+      "errorCases": []
+    },
+    {
+      "id": "V6BPyIws",
+      "meta": {
+        "description": "Isolate the first Calendly object ID"
+      },
+      "appVersion": "kustomer-^1.10.2",
+      "action": "kustomer.regex-match.generic",
+      "params": {
+        "testString": "/#steps.3fPbp7p3.body",
+        "regex": "(?<=calendly-event\",\"id\":\")[^\"]+"
+      },
+      "transitions": [
+        {
+          "target": "xCbUDWjR",
+          "condition": {
+            "op": "gte",
+            "values": [
+              "/#steps.V6BPyIws.match.length",
+              "10"
+            ]
+          },
+          "meta": {
+            "description": "Confirm that an ID was found, stop the workflow if not"
+          }
+        }
+      ],
+      "errorCases": []
+    },
+    {
+      "id": "Yzg7uB8R",
+      "meta": {
+        "description": "Apply the customer company to the Calendly object"
+      },
+      "appVersion": "kustomer-^1.10.2",
+      "action": "kustomer.kobject.update",
+      "params": {
+        "klassName": "calendly-event",
+        "id": "/#steps.xCbUDWjR.id",
+        "custom": {
+          "customersCompanyStr": "none"
+        }
+      },
+      "transitions": [
+        {
+          "target": "QUywPiw_",
+          "condition": {
+            "op": "true",
+            "values": [
+              true
+            ]
+          }
+        }
+      ],
+      "errorCases": []
+    },
+    {
+      "id": "6rawLFsh",
+      "meta": {
+        "description": "Wait 1 minute before firing again"
+      },
+      "appVersion": "scheduler-^1.0.1",
+      "action": "kustomer.app.scheduler.schedule-workflow",
+      "params": {
+        "runAt": {
+          "value": 60,
+          "type": "relative"
+        },
+        "workflowId": "673e81eb496bbd0347073e76",
+        "inputs": {
+          "test": "test"
+        }
+      },
+      "transitions": [],
+      "errorCases": []
+    },
+    {
+      "id": "QUywPiw_",
+      "meta": {
+        "description": "Wait 1 minute before firing again"
+      },
+      "appVersion": "scheduler-^1.0.1",
+      "action": "kustomer.app.scheduler.schedule-workflow",
+      "params": {
+        "runAt": {
+          "value": 60,
+          "type": "relative"
+        },
+        "workflowId": "673e81eb496bbd0347073e76",
+        "inputs": {
+          "test": "test"
+        }
+      },
+      "transitions": [],
+      "errorCases": []
+    }
+  ],
+  "trigger": {
+    "id": "1",
+    "callable": true,
+    "transitions": [
+      {
+        "target": "3fPbp7p3",
+        "condition": {
+          "op": "true",
+          "values": [
+            true
+          ]
+        }
+      }
+    ],
+    "schema": {
+      "properties": {
+        "test": {
+          "type": "string"
+        }
+      },
+      "required": []
+    },
+    "eventName": "kustomer.workflow.673e81eb496bbd0347073e76.call"
+  }
+}
