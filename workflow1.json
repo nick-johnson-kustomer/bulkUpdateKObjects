@@ -1,0 +1,43 @@
+{
+  "description": "Created by Nick at Kustomer. Will only be used temporarily. ",
+  "name": "temp---update-calendly-objects---part-1",
+  "steps": [
+    {
+      "id": "vf9mHqL2",
+      "appVersion": "scheduler-^1.0.1",
+      "action": "kustomer.app.scheduler.schedule-workflow",
+      "params": {
+        "runAt": {
+          "value": 0,
+          "type": "relative"
+        },
+        "workflowId": "673e81eb496bbd0347073e76",
+        "inputs": {
+          "test": "test"
+        }
+      },
+      "transitions": [],
+      "errorCases": []
+    }
+  ],
+  "trigger": {
+    "eventName": "kustomer.hooks.email.673e8233fc61042b8d8fe13d.receive",
+    "id": "1",
+    "meta": {
+      "displayName": "",
+      "description": ""
+    },
+    "transitions": [
+      {
+        "target": "vf9mHqL2",
+        "condition": {
+          "op": "true",
+          "values": [
+            true
+          ]
+        }
+      }
+    ],
+    "appVersion": "hooks-^1.0.0"
+  }
+}
